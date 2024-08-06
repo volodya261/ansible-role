@@ -18,6 +18,16 @@
     mode: 766
   loop: "{{ compose }}"
 
+- name: Check if Docker service is running
+  command: systemctl is-active docker
+  register: docker_service_status
+  ignore_errors: true
+
+- name: Install Docker if not running
+  include_role:
+    name: docker-onl
+  when: docker_service_status.rc != 0
+
 - name: Create and start services
   community.docker.docker_compose_v2:
     project_src: /opt/postgres/

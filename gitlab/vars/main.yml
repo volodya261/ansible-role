@@ -1,4 +1,0 @@
----
-# vars file for docker-inst
-compose:
-  - docker-compose.yml

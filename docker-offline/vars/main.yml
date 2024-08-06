@@ -1,0 +1,11 @@
+---
+# vars file for docker-inst
+packages:
+  - docker-23.0.0.tgz
+  - docker-compose
+  - docker.service
+  - python.tar
+
+docker:
+  - "{{ files }}/docker/"
+  - "{{ files }}/docker-compose"

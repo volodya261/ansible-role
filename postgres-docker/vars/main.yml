@@ -1,0 +1,4 @@
+---
+# vars file for postgres-docker
+compose:
+  - docker-compose.yml

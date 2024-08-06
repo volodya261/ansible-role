@@ -1,0 +1,14 @@
+
+[Unit]
+Description=Docker Application Container Engine
+Documentation=https://docs.docker.com
+
+[Service]
+ExecStart=/usr/bin/dockerd
+Restart=always
+StartLimitInterval=0
+RestartSec=3
+ExecStop=/usr/bin/docker stop -t 2 dockerd
+
+[Install]
+WantedBy=multi-user.target

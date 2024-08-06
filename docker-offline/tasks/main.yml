@@ -1,0 +1,67 @@
+# tasks file for docker-inst
+- name: copy Docker
+  copy:
+    src: "{{ item }}"
+    dest: /opt/packages/
+    owner: root
+    mode: 766
+  loop: "{{ packages }}"
+
+- name: tar Python
+  ansible.builtin.unarchive:
+    src: /opt/packages/python.tar
+    dest: "{{ files }}"
+    remote_src: yes
+
+- name: Find RPM files in the extracted directory
+  ansible.builtin.find:
+    paths: "{{ files }}"
+    patterns: "*.rpm"
+    recurse: yes
+  register: rpm_files
+
+- name: Install RPM packages
+  ansible.builtin.package:
+    name: "{{ item.path }}"
+    state: present
+  loop: "{{ rpm_files.files }}"
+
+- name: Unarchive Docker
+  unarchive:
+    src: /opt/packages/docker-23.0.0.tgz
+    dest: "{{ files }}"
+    owner: root
+    mode: "0755"
+    remote_src: yes
+
+- name: Move Docker binaries to /usr/bin/
+  copy:
+    src: "{{ item }}"
+    dest: /usr/bin/
+    owner: root
+    mode: "0755"
+    remote_src: yes
+  loop: "{{ docker }}"
+
+- name: Create Docker systemd service unit file
+  copy:
+    src: /opt/packages/docker.service
+    dest: /etc/systemd/system/docker.service
+    remote_src: yes
+  notify:
+    - Reload systemd
+
+- name: Reload systemd
+  systemd:
+    daemon_reload: yes
+
+- name: Start and enable Docker service
+  systemd:
+    name: docker
+    state: started
+    enabled: yes
+
+- name: Delete content & directory
+  ansible.builtin.file:
+    state: absent
+    path: "{ files }"

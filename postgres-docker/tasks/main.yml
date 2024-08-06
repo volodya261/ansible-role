@@ -1,0 +1,26 @@
+---
+- name: create dir
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: root
+    group: root
+    mode: 0775
+  loop:
+    - /opt/postgres/dump
+    - /opt/postgres/data
+
+- name: copy docker-compose
+  copy:
+    src: "{{ item }}"
+    dest: /opt/postgres/
+    owner: root
+    mode: 766
+  loop: "{{ compose }}"
+
+- name: Create and start services
+  community.docker.docker_compose_v2:
+    project_src: /opt/postgres/
+    files:
+    - docker-compose.yml
+  register: output

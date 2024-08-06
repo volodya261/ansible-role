@@ -1,0 +1,23 @@
+---
+# tasks file for docker-onl
+- name: add repo
+  ansible.builtin.yum_repository:
+    name: docker
+    description: EPEL YUM repo
+    baseurl: https://download.docker.com/linux/centos/$releasever/$basearch/stable
+
+- name: install docker
+  yum:
+    name: 
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+      - docker-buildx-plugin
+      - docker-compose-plugin
+    state: present
+
+- name: start docker
+  ansible.builtin.service:                                                                                                                                               
+    name: docker                                                                                                                                          
+    state: started 
+    enabled: true

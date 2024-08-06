@@ -1,0 +1,1 @@
+- Установка Docker, Docker-compose, Python39, pip

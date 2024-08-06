@@ -1,0 +1,7 @@
+---
+# handlers file for docker-inst
+
+- name: Reload systemd
+  systemd:
+    name: docker
+    state: restarted
